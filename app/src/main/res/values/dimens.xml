@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="app_bar_height">400dp</dimen>
+    <dimen name="item_width">200dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="thumb_width">80dp</dimen>
+    <dimen name="thumb_height">40dp</dimen>
+    <dimen name="widget_margin">10dp</dimen>
+    <dimen name="widget_text_size">24sp</dimen>
+    <dimen name="item_padding">16dp</dimen>
+    <dimen name="margin_item">16dp</dimen>
+</resources>

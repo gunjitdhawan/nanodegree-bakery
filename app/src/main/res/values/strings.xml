@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Baking Nanodegree</string>
+    <string name="title_fooditem_detail">FoodItem Detail</string>
+    <string name="something_went_wrong">Something went wrong.</string>
+    <string name="appwidget_text">This is recipe description</string>
+    <string name="appwidget_title">This is recipe name</string>
+    <string name="title">Title</string>
+</resources>
