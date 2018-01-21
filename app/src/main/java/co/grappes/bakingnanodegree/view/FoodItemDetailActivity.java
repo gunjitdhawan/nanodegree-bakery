@@ -35,8 +35,10 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import co.grappes.bakingnanodegree.R;
 import co.grappes.bakingnanodegree.model.FoodItem;
@@ -57,10 +59,12 @@ public class FoodItemDetailActivity extends AppCompatActivity {
     AppBarLayout appBarLayout;
     NestedScrollView nestedScrollView;
     ProgressBar loadingBar;
+    static HashMap<Integer, Long> seekMap = new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fooditem_detail);
+        Log.e("oncreate", "1");
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         toolbar.setTitle("");
         loadingBar = findViewById(R.id.loading_bar);
@@ -87,9 +91,9 @@ public class FoodItemDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        if (savedInstanceState == null) {
+        foodItem = getIntent().getParcelableExtra("foodItem");
 
-            foodItem = getIntent().getParcelableExtra("foodItem");
+        if (savedInstanceState == null) {
 
             Bundle arguments = new Bundle();
             arguments.putParcelable("foodItem", foodItem);
@@ -98,9 +102,10 @@ public class FoodItemDetailActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fooditem_detail_container, fragment)
                     .commit();
-            if(foodItem!=null && foodItem.steps.get(0).videoURL!=null && foodItem.steps.get(0).videoURL.length()>0) {
-                playVideo(foodItem.steps.get(0).videoURL);
-            }
+        }
+
+        if(foodItem!=null && foodItem.steps.get(0).videoURL!=null && foodItem.steps.get(0).videoURL.length()>0) {
+            playVideo(foodItem.steps.get(0).videoURL);
         }
     }
 
@@ -136,8 +141,16 @@ public class FoodItemDetailActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         if(exoPlayer!=null)
         {
+            Log.e("onDestroy", ""+exoPlayer.getCurrentPosition());
+            seekMap.put(foodItem.id, exoPlayer.getCurrentPosition());
             exoPlayer.release();
             exoPlayer = null;
         }
@@ -156,7 +169,6 @@ public class FoodItemDetailActivity extends AppCompatActivity {
             BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
             TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
             exoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
-
             Uri videoURI = Uri.parse(videoUrl);
 
             DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
@@ -180,6 +192,14 @@ public class FoodItemDetailActivity extends AppCompatActivity {
 
                 @Override
                 public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+
+                    Log.e("onPlayerStateChanged", ""+playbackState + new Gson().toJson(seekMap));
+
+                    if(seekMap.containsKey(foodItem.id))
+                    {
+                        Log.e("onPlayerStateChanged", ""+seekMap.get(foodItem.id));
+                        exoPlayer.seekTo(seekMap.get(foodItem.id));
+                    }
                     if(playbackState==Player.STATE_READY)
                     {
                         loadingBar.setVisibility(View.GONE);
