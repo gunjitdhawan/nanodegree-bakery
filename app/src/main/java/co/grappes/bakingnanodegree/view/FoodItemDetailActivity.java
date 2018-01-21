@@ -35,7 +35,6 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -193,12 +192,10 @@ public class FoodItemDetailActivity extends AppCompatActivity {
                 @Override
                 public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
 
-                    Log.e("onPlayerStateChanged", ""+playbackState + new Gson().toJson(seekMap));
-
                     if(seekMap.containsKey(foodItem.id))
                     {
-                        Log.e("onPlayerStateChanged", ""+seekMap.get(foodItem.id));
                         exoPlayer.seekTo(seekMap.get(foodItem.id));
+                        seekMap.clear();
                     }
                     if(playbackState==Player.STATE_READY)
                     {
