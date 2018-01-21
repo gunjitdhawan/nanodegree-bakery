@@ -3,6 +3,7 @@ package co.grappes.bakingnanodegree.view;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NavUtils;
@@ -10,6 +11,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -58,6 +60,8 @@ public class FoodItemDetailActivity extends AppCompatActivity {
     AppBarLayout appBarLayout;
     NestedScrollView nestedScrollView;
     ProgressBar loadingBar;
+    LinearLayoutManager linearLayoutManager;
+    Parcelable mListState;
     static HashMap<Integer, Long> seekMap = new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +70,9 @@ public class FoodItemDetailActivity extends AppCompatActivity {
         Log.e("oncreate", "1");
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         toolbar.setTitle("");
+        linearLayoutManager = new LinearLayoutManager(FoodItemDetailActivity.this);
         loadingBar = findViewById(R.id.loading_bar);
+        loadingBar.setVisibility(View.GONE);
         nestedScrollView = findViewById(R.id.fooditem_detail_container);
         setSupportActionBar(toolbar);
         appBarLayout = findViewById(R.id.app_bar);
@@ -242,5 +248,34 @@ public class FoodItemDetailActivity extends AppCompatActivity {
             Log.e("MainAcvtivity"," exoplayer error "+ e.toString());
         }
 
+    }
+
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        // Save list state
+        mListState = linearLayoutManager.onSaveInstanceState();
+        state.putParcelable("listkey", mListState);
+        state.putParcelable("item", foodItem);
+    }
+
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+
+        // Retrieve list state and list/item positions
+        if(state != null)
+        {
+            mListState = state.getParcelable("listkey");
+            FoodItemDetailActivity.this.foodItem = state.getParcelable("item");
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mListState != null) {
+            linearLayoutManager.onRestoreInstanceState(mListState);
+        }
     }
 }
