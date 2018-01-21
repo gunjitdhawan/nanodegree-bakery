@@ -1,4 +1,4 @@
-package co.grappes.bakingnanodegree;
+package co.grappes.bakingnanodegree.utils;
 
 import android.app.Activity;
 import android.util.DisplayMetrics;

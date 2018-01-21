@@ -1,8 +1,12 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          android:id="@+id/fooditem_detail"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:padding="@dimen/item_padding"
-          android:textIsSelectable="true"
-          tools:context="co.grappes.bakingnanodegree.view.FoodItemDetailFragment"/>
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                                            xmlns:tools="http://schemas.android.com/tools"
+                                            android:id="@+id/fooditem_details"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                        android:paddingLeft="@dimen/item_padding"
+                                        android:paddingRight="@dimen/item_padding"
+                                            app:layoutManager="LinearLayoutManager"
+                                            tools:context="co.grappes.bakingnanodegree.view.FoodItemDetailActivity"
+                                            tools:listitem="@layout/fooditem_steps_content"/>

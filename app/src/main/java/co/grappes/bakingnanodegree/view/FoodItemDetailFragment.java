@@ -1,14 +1,12 @@
 package co.grappes.bakingnanodegree.view;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.text.Html;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import co.grappes.bakingnanodegree.R;
 import co.grappes.bakingnanodegree.model.FoodItem;
@@ -16,7 +14,7 @@ import co.grappes.bakingnanodegree.model.FoodItem;
 public class FoodItemDetailFragment extends Fragment {
 
     FoodItem foodItem;
-    public static final String ARG_ITEM_ID = "item_id";
+    RecyclerView recyclerView;
 
     public FoodItemDetailFragment() {
     }
@@ -27,12 +25,6 @@ public class FoodItemDetailFragment extends Fragment {
 
         if (getArguments()!=null) {
             foodItem = getArguments().getParcelable("foodItem");
-
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                //appBarLayout.setTitle(foodItem.name);
-            }
         }
     }
 
@@ -41,11 +33,24 @@ public class FoodItemDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fooditem_detail, container, false);
 
-        // Show the dummy content as text in a TextView.
-        if (foodItem != null) {
-            ((TextView) rootView.findViewById(R.id.fooditem_detail)).setText(Html.fromHtml(foodItem.description));
-        }
-
+        setViews(rootView);
+        initViews();
         return rootView;
+    }
+
+    private void initViews() {
+        assert recyclerView != null;
+        setupRecyclerView((RecyclerView) recyclerView);
+
+    }
+
+    private void setViews(View rootView) {
+        recyclerView = rootView.findViewById(R.id.fooditem_details);
+    }
+
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+        if(foodItem!=null) {
+            recyclerView.setAdapter(new FoodStepAdapter(getActivity(), foodItem.steps));
+        }
     }
 }

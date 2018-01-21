@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -22,7 +23,9 @@ public class FoodItemListActivity extends AppCompatActivity {
     View recyclerView;
     FloatingActionButton fab;
     Toolbar toolbar;
+    FoodAdapter foodAdapter;
     private boolean mTwoPane;
+    ProgressBar loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,18 +41,20 @@ public class FoodItemListActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         recyclerView = findViewById(R.id.fooditem_list);
+        loadingBar = findViewById(R.id.loading_bar);
     }
 
     private void initViews() {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-
+        foodAdapter = new FoodAdapter(this, foodItems, mTwoPane);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Refreshing...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                getRecipes();
             }
         });
 
@@ -62,20 +67,27 @@ public class FoodItemListActivity extends AppCompatActivity {
     }
 
     private void getRecipes() {
-        new FoodPresenter().getRecipes(new FoodPresenter.GetRecipesInterface() {
+
+        loadingBar.setVisibility(View.VISIBLE);
+
+        new FoodPresenter().getRecipes(FoodItemListActivity.this, new FoodPresenter.GetRecipesInterface() {
             @Override
             public void onGetRecipesSuccess(ArrayList<FoodItem> foodItems) {
+                loadingBar.setVisibility(View.GONE);
+                FoodItemListActivity.this.foodItems.clear();
                 FoodItemListActivity.this.foodItems.addAll(foodItems);
+                foodAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onGetRecipesFailure(String message) {
-                Toast.makeText(FoodItemListActivity.this, getString(R.string.something_went_wrong), Toast.LENGTH_LONG);
+                loadingBar.setVisibility(View.GONE);
+                Toast.makeText(FoodItemListActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new FoodAdapter(this, foodItems, mTwoPane));
+        recyclerView.setAdapter(foodAdapter);
     }
 }

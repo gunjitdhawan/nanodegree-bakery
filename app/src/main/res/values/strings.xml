@@ -5,4 +5,9 @@
     <string name="appwidget_text">This is recipe description</string>
     <string name="appwidget_title">This is recipe name</string>
     <string name="title">Title</string>
+    <string name="server_error">Server error. Please try again</string>
+    <string name="dummy_title">dummy title</string>
+    <string name="no_video">No video link found</string>
+    <string name="view_ingredients">View Ingredients</string>
+    <string name="servings">servings</string>
 </resources>

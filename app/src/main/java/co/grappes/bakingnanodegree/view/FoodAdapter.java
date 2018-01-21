@@ -65,9 +65,15 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Glide.with(mParentActivity).load(mValues.get(position).imageLink).into(holder.thumbnailImage);
+        if(mValues.get(position).image!=null &&mValues.get(position).image.length()>0) {
+            Glide.with(mParentActivity).load(mValues.get(position).image).into(holder.thumbnailImage);
+        }
+        else
+        {
+            holder.thumbnailImage.setImageResource(R.drawable.default_thumbnail);
+        }
         holder.titleView.setText(mValues.get(position).name);
-
+        holder.servingTextView.setText("Servings : "+mValues.get(position).servings);
         holder.itemView.setTag(mValues.get(position));
         holder.itemView.setOnClickListener(mOnClickListener);
     }
@@ -79,12 +85,13 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
         final ImageView thumbnailImage;
-        final TextView titleView;
+        final TextView titleView, servingTextView;
 
         ViewHolder(View view) {
             super(view);
             thumbnailImage = (ImageView) view.findViewById(R.id.thumbnail);
             titleView = (TextView) view.findViewById(R.id.title);
+            servingTextView = view.findViewById(R.id.serving);
         }
     }
 }

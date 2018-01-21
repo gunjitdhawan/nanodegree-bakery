@@ -35,15 +35,15 @@ public class FoodWidget extends AppWidgetProvider {
         // In widget we are not allowing to use intents as usually. We have to use PendingIntent instead of 'startActivity'
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, null, 0);
         // Here the basic operations the remote view can do.
-        setWidgetData(appWidgetManager, appWidgetId, views, pendingIntent);
+        setWidgetData(context, appWidgetManager, appWidgetId, views, pendingIntent);
     }
 
-    private void setWidgetData(final AppWidgetManager appWidgetManager, final int appWidgetId, final RemoteViews views, PendingIntent pendingIntent) {
-        new FoodPresenter().getRecipes(new FoodPresenter.GetRecipesInterface() {
+    private void setWidgetData(Context context, final AppWidgetManager appWidgetManager, final int appWidgetId, final RemoteViews views, PendingIntent pendingIntent) {
+        new FoodPresenter().getRecipes(context, new FoodPresenter.GetRecipesInterface() {
             @Override
             public void onGetRecipesSuccess(ArrayList<FoodItem> foodItems) {
                 views.setTextViewText(R.id.tv_title, foodItems.get(0).name);
-                views.setTextViewText(R.id.tv_description, Html.fromHtml(foodItems.get(0).description));
+                views.setTextViewText(R.id.tv_description, Html.fromHtml(foodItems.get(0).ingredients.toString()));
                 // Instruct the widget manager to update the widget
                 appWidgetManager.updateAppWidget(appWidgetId, views);
             }

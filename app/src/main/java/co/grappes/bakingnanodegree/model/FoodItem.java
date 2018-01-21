@@ -3,32 +3,47 @@ package co.grappes.bakingnanodegree.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+
 /**
  * Created by gunjit on 19/01/18.
  */
 
-public class FoodItem implements Parcelable{
+public class FoodItem implements Parcelable {
 
     public String name;
     public int id;
-    public String description;
-    public String imageLink;
-    public String videoUrl;
-
-    public FoodItem(String name, int id, String description, String imageLink, String videoUrl) {
-        this.name = name;
-        this.id = id;
-        this.description = description;
-        this.imageLink = imageLink;
-        this.videoUrl = videoUrl;
-    }
+    @SerializedName("ingredients")
+    public ArrayList<Ingredients> ingredients;
+    @SerializedName("steps")
+    public ArrayList<Step> steps;
+    public int servings;
+    public String image;
 
     protected FoodItem(Parcel in) {
         name = in.readString();
         id = in.readInt();
-        description = in.readString();
-        imageLink = in.readString();
-        videoUrl = in.readString();
+        ingredients = in.createTypedArrayList(Ingredients.CREATOR);
+        steps = in.createTypedArrayList(Step.CREATOR);
+        servings = in.readInt();
+        image = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeInt(id);
+        dest.writeTypedList(ingredients);
+        dest.writeTypedList(steps);
+        dest.writeInt(servings);
+        dest.writeString(image);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FoodItem> CREATOR = new Creator<FoodItem>() {
@@ -42,18 +57,4 @@ public class FoodItem implements Parcelable{
             return new FoodItem[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(name);
-        parcel.writeInt(id);
-        parcel.writeString(description);
-        parcel.writeString(imageLink);
-        parcel.writeString(videoUrl);
-    }
 }
